@@ -18,6 +18,8 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     private  var mCorrectAnswers: Int = 0
     private  var mUserName: String? = null
 
+    private  var answerSelected = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,16 +94,25 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when(v?.id){
             R.id.tv_option_one -> {
-                selectedOptionView(tv_option_one, 1)
+                if (!answerSelected) {
+                    selectedOptionView(tv_option_one, 1)
+                }
             }
             R.id.tv_option_two -> {
-                selectedOptionView(tv_option_two, 2)
+                if (!answerSelected) {
+
+                    selectedOptionView(tv_option_two, 2)
+                }
             }
             R.id.tv_option_three -> {
-                selectedOptionView(tv_option_three, 3)
+                if (!answerSelected) {
+                    selectedOptionView(tv_option_three, 3)
+                }
             }
             R.id.tv_option_four -> {
-                selectedOptionView(tv_option_four, 4)
+                if (!answerSelected) {
+                    selectedOptionView(tv_option_four, 4)
+                }
             }
             R.id.btn_submit -> {
                 if(mselectedOptionPosition == 0){
@@ -110,7 +121,8 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
                     when{
                         mCurrentPosition <= mQuestionsList!!.size ->{
                         setQuestion()
-                    } else ->{
+                            answerSelected = false
+                        } else ->{
                         val intent = Intent(this, ResultActivity::class.java)
                         intent.putExtra(Constants.USER_NAME, mUserName)
                         intent.putExtra(Constants.CORRECT_ANSWERS, mCorrectAnswers)
@@ -125,17 +137,18 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
                     val question = mQuestionsList?.get(mCurrentPosition -1 )
                     if (question!!.correctAnswer != mselectedOptionPosition){
                         answerView(mselectedOptionPosition, R.drawable.wrong_option_border_bg)
+                        answerSelected = true
                     }else {
                         mCorrectAnswers++
                     }
                     answerView(question.correctAnswer, R.drawable.correct_option_border_bg)
+                    answerSelected = true
 
 
                     if (mCurrentPosition == mQuestionsList!!.size){
                         btn_submit.text = "Finish"
                     }else{
                         btn_submit.text = "GO TO NEXT QUESTION"
-                        R.id.tv_option_one.
                     }
                     mselectedOptionPosition = 0
                 }
@@ -168,10 +181,14 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
         defaultOptionsView()
         mselectedOptionPosition = selectedOptionNum
 
-        tv.setTextColor(Color.parseColor("#363A43"))
-        tv.setTypeface(tv.typeface, Typeface.BOLD)
-        tv.background = ContextCompat.getDrawable(this,R.drawable.selected_option_border_bg)
-        btn_submit.isClickable = true
+        if (!answerSelected) {
+
+            tv.setTextColor(Color.parseColor("#363A43"))
+            tv.setTypeface(tv.typeface, Typeface.BOLD)
+            tv.background = ContextCompat.getDrawable(this, R.drawable.selected_option_border_bg)
+        }
+            btn_submit.isClickable = true
+
     }
 
 }
